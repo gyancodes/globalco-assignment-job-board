@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import type { Role } from "@/types";
 import {
   LayoutDashboard, Briefcase, FileText, Search,
-  Users, PlusCircle, Sparkles, BarChart3, User,
+  Users, PlusCircle, Sparkles, User,
   Menu, X
 } from "lucide-react";
 

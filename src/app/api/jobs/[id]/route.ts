@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { requireRole } from "@/lib/auth";
-import { createJobSchema, updateJobSchema } from "@/lib/validations";
+import { createJobSchema } from "@/lib/validations";
 import { handleApiError, ApiError } from "@/lib/api-error";
 
 export async function GET(

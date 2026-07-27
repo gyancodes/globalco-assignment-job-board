@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  ArrowLeft, MapPin, Clock, Briefcase, DollarSign,
-  Building2, Globe, GraduationCap, Users, Heart,
-  Lightbulb, CheckCircle, FileText
+  ArrowLeft, MapPin, DollarSign,
+  Building2, Globe, GraduationCap, Heart,
+  Lightbulb
 } from "lucide-react";
 
 type Params = Promise<{ id: string }>;

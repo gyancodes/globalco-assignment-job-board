@@ -24,18 +24,18 @@ export function ResumeReviewPage() {
     }
 
     if (file.type === "application/pdf") {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("/api/ai/extract-text", {
-        method: "POST",
-        body: formData,
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to extract text from PDF");
+      const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+      const buffer = await file.arrayBuffer();
+      const pdf = await pdfjs.getDocument({ data: buffer }).promise;
+      const textParts: string[] = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        const pageText = content.items.map((item: { str: string }) => item.str).join(" ");
+        textParts.push(pageText);
       }
-      const { text } = await res.json();
-      return text;
+      await pdf.destroy();
+      return textParts.join("\n\n");
     }
 
     throw new Error("Unsupported file type. Please upload a .txt or .pdf file.");

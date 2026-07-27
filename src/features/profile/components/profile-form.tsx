@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, X, Save, User, MapPin, Link2, Code, Briefcase, GraduationCap, Phone, Upload, Sparkles, CheckCircle } from "lucide-react";
+import { Loader2, Plus, X, Save, User, MapPin, Link2, Code, Briefcase, GraduationCap, Upload, CheckCircle } from "lucide-react";
 import type { UserProfile, Experience, Education } from "@/types";
 
 type ProfileFormProps = {

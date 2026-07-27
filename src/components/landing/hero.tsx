@@ -6,9 +6,7 @@ import {
   ArrowRight,
   Briefcase,
   Sparkles,
-  MapPin,
   Clock,
-  CheckCircle,
   Users,
 } from "lucide-react";
 

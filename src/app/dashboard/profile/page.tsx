@@ -5,6 +5,24 @@ import { ProfileForm } from "@/features/profile/components/profile-form";
 import { MapPin, Link as LinkIcon, Globe, ExternalLink, Phone, Mail } from "lucide-react";
 import Link from "next/link";
 
+type ExperienceItem = {
+  title: string;
+  company: string;
+  location?: string;
+  startDate: string;
+  endDate?: string;
+  current?: boolean;
+  description?: string;
+};
+
+type EducationItem = {
+  degree: string;
+  school: string;
+  location?: string;
+  startYear?: string;
+  endYear?: string;
+};
+
 export default async function ProfilePage() {
   const authUser = await currentUser();
   if (!authUser) redirect("/sign-in");
@@ -87,7 +105,7 @@ export default async function ProfilePage() {
               <div className="mt-5 pt-5 border-t border-border/50">
                 <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Experience</h3>
                 <div className="space-y-4">
-                  {exp.map((e: any, i: number) => (
+                  {exp.map((e: ExperienceItem, i: number) => (
                     <div key={i} className="flex gap-3">
                       <div className="w-2 h-2 rounded-full bg-primary/30 mt-1.5 shrink-0" />
                       <div>
@@ -110,7 +128,7 @@ export default async function ProfilePage() {
               <div className="mt-5 pt-5 border-t border-border/50">
                 <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Education</h3>
                 <div className="space-y-4">
-                  {edu.map((e: any, i: number) => (
+                  {edu.map((e: EducationItem, i: number) => (
                     <div key={i} className="flex gap-3">
                       <div className="w-2 h-2 rounded-full bg-chart-4/30 mt-1.5 shrink-0" />
                       <div>

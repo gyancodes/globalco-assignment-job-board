@@ -4,12 +4,9 @@ import { Button } from "@/components/ui/button";
 import {
   Briefcase,
   Users,
-  BarChart3,
   Sparkles,
   ArrowRight,
   TrendingUp,
-  CheckCircle,
-  Clock,
 } from "lucide-react";
 import Link from "next/link";
 

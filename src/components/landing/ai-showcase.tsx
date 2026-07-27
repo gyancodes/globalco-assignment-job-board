@@ -9,7 +9,6 @@ import {
   AlertCircle,
   Lightbulb,
   ArrowRight,
-  Brain,
   Star,
 } from "lucide-react";
 import Link from "next/link";

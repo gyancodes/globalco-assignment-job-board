@@ -1,30 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { JobForm } from "@/features/jobs/components/job-form";
 import type { GeneratedJobDescription } from "@/types";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default function CreateJobPage() {
-  const [aiData, setAiData] = useState<GeneratedJobDescription | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    try {
-      const stored = sessionStorage.getItem("ai-job-data");
-      if (stored) {
-        const parsed = JSON.parse(stored) as GeneratedJobDescription;
-        setAiData(parsed);
-        sessionStorage.removeItem("ai-job-data");
-      }
-    } catch {
-      // ignore parse errors
-    } finally {
-      setLoading(false);
+function getInitialAiData(): GeneratedJobDescription | null {
+  try {
+    const stored = sessionStorage.getItem("ai-job-data");
+    if (stored) {
+      const parsed = JSON.parse(stored) as GeneratedJobDescription;
+      sessionStorage.removeItem("ai-job-data");
+      return parsed;
     }
-  }, []);
+  } catch {
+    // ignore parse errors
+  }
+  return null;
+}
+
+export default function CreateJobPage() {
+  const [aiData] = useState<GeneratedJobDescription | null>(getInitialAiData);
 
   const defaultValues = aiData
     ? {
@@ -68,14 +66,7 @@ export default function CreateJobPage() {
           </p>
         </div>
       </div>
-      {loading ? (
-        <div className="flex items-center justify-center py-20 text-muted-foreground">
-          <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent mr-2" />
-          Loading...
-        </div>
-      ) : (
-        <JobForm defaultValues={defaultValues} />
-      )}
+      <JobForm defaultValues={defaultValues} />
     </div>
   );
 }

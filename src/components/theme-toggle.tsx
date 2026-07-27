@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Sun, Moon } from "lucide-react";
 
-export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
+function getInitialDark(): boolean {
+  return document.documentElement.classList.contains("dark");
+}
 
-  useEffect(() => {
-    setDark(document.documentElement.classList.contains("dark"));
-  }, []);
+export function ThemeToggle() {
+  const [dark, setDark] = useState(getInitialDark);
 
   function toggle() {
     const next = !dark;

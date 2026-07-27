@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, DollarSign, Clock, Building2, Briefcase } from "lucide-react";
+import { MapPin, Clock, Building2, Briefcase } from "lucide-react";
 
 type LocationType = "REMOTE" | "HYBRID" | "ON_SITE";
 type EmploymentType = "FULL_TIME" | "PART_TIME" | "CONTRACT" | "INTERNSHIP" | "FREELANCE";

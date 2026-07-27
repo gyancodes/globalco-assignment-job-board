@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, X, Briefcase, MapPin, Building2, DollarSign, Globe, GraduationCap, Clock, Heart, FileText, Users, Lightbulb } from "lucide-react";
+import { Loader2, Plus, X, Briefcase, DollarSign, FileText } from "lucide-react";
 
 const locationTypes = [
   { value: "REMOTE", label: "Remote" },
@@ -51,8 +51,8 @@ export function JobForm({ defaultValues, jobId }: JobFormProps) {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<CreateJobInput>({
-    resolver: zodResolver(createJobSchema) as any,
-    defaultValues: { ...defaultValues, techSkills: skills } as any,
+    resolver: zodResolver(createJobSchema),
+    defaultValues: { ...defaultValues, techSkills: skills },
   });
 
   function addSkill() {

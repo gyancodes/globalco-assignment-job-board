@@ -111,7 +111,7 @@ export default async function DashboardPage() {
                 </div>
               ) : (
                 <div className="-mx-6">
-                  {recentJobs.map((job, i) => (
+                  {recentJobs.map((job) => (
                     <Link key={job.id} href={`/dashboard/jobs/${job.id}/edit`}
                       className="flex items-center justify-between px-6 py-3.5 hover:bg-muted/40 transition-colors border-b border-border/50 last:border-0"
                     >
