@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { handleApiError } from "@/lib/api-error";
-import { groq } from "@/lib/groq";
+import { getGroq } from "@/lib/groq";
 
 const PARSE_PROMPT = `You are an expert resume parser. Extract structured profile information from the resume text provided. Return ONLY a valid JSON object with this exact structure:
 
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: "resumeText is required" }, { status: 400 });
     }
 
-    const completion = await groq.chat.completions.create({
+    const completion = await getGroq().chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [
         { role: "system", content: PARSE_PROMPT },

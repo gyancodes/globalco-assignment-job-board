@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { requireRole } from "@/lib/auth";
 import { handleApiError } from "@/lib/api-error";
 import { prisma } from "@/lib/prisma";
-import { groq } from "@/lib/groq";
+import { getGroq } from "@/lib/groq";
 
 const MATCH_SYSTEM_PROMPT = `You are an expert technical recruiter evaluating how well a candidate fits a job. Analyze the candidate's profile against the job description and return a JSON object:
 
@@ -65,7 +65,7 @@ ${jobInfo}
 
 Return the match analysis as JSON.`;
 
-    const completion = await groq.chat.completions.create({
+    const completion = await getGroq().chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [
         { role: "system", content: MATCH_SYSTEM_PROMPT },
