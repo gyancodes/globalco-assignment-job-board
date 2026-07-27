@@ -86,17 +86,28 @@ The application uses PostgreSQL with the following models:
    npm run db:push
    ```
 
-   Optionally seed the database:
+5. Seed the database with test users and sample data:
    ```bash
    npm run db:seed
    ```
 
-5. Start the development server:
+6. Start the development server:
    ```bash
    npm run dev
    ```
 
    Open [http://localhost:3000](http://localhost:3000) to see the application.
+
+## Test Accounts
+
+After running `npm run db:seed`, you can sign in with these pre-seeded accounts:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Recruiter | `recruiter@test.com` | `test123456` |
+| Candidate | `candidate@test.com` | `test123456` |
+
+The recruiter account has 3 sample job listings pre-loaded. The candidate account has a pre-filled profile with skills, experience, and education.
 
 ## Available Scripts
 
@@ -119,6 +130,7 @@ The application uses PostgreSQL with the following models:
 | `DIRECT_URL` | Direct PostgreSQL connection string |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (for seeding admin users) |
 | `GROQ_API_KEY` | Groq API key for AI features |
 
 ## CI/CD Pipeline
@@ -134,6 +146,19 @@ The project uses GitHub Actions for continuous integration and deployment.
 **CD Stage (Deploy to Vercel):**
 - Triggered on pushes to `master` after CI passes
 - Deploys to Vercel production environment automatically
+
+### Required Vercel Environment Variables
+
+The following environment variables must be set in your Vercel project for the production deployment to work:
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string (Supabase pooler) |
+| `DIRECT_URL` | Direct PostgreSQL connection string |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (for seeding admin users) |
+| `GROQ_API_KEY` | Groq API key for AI features |
 
 ### Required GitHub Secrets
 
