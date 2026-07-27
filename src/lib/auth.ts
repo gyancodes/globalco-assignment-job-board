@@ -9,29 +9,19 @@ export async function currentUser() {
 
   if (!authUser) return null;
 
-  let user = await getPrisma().user.findUnique({
+  const email = authUser.email ?? "";
+  const fullName =
+    authUser.user_metadata?.full_name ??
+    authUser.user_metadata?.name ??
+    email.split("@")[0] ??
+    "User";
+  const role = (authUser.user_metadata?.role as Role) ?? "CANDIDATE";
+
+  const user = await getPrisma().user.upsert({
     where: { id: authUser.id },
+    update: { email, fullName },
+    create: { id: authUser.id, email, fullName, role },
   });
-
-  if (!user) {
-    const email = authUser.email ?? "";
-    const fullName =
-      authUser.user_metadata?.full_name ??
-      authUser.user_metadata?.name ??
-      email.split("@")[0] ??
-      "User";
-
-    const role = (authUser.user_metadata?.role as Role) ?? "CANDIDATE";
-
-    user = await getPrisma().user.create({
-      data: {
-        id: authUser.id,
-        email,
-        fullName,
-        role,
-      },
-    });
-  }
 
   return user;
 }
@@ -48,28 +38,19 @@ export async function requireAuth() {
     });
   }
 
-  let user = await getPrisma().user.findUnique({
+  const email = authUser.email ?? "";
+  const fullName =
+    authUser.user_metadata?.full_name ??
+    authUser.user_metadata?.name ??
+    email.split("@")[0] ??
+    "User";
+  const role = (authUser.user_metadata?.role as Role) ?? "CANDIDATE";
+
+  const user = await getPrisma().user.upsert({
     where: { id: authUser.id },
+    update: { email, fullName },
+    create: { id: authUser.id, email, fullName, role },
   });
-
-  if (!user) {
-    const email = authUser.email ?? "";
-    const fullName =
-      authUser.user_metadata?.full_name ??
-      authUser.user_metadata?.name ??
-      email.split("@")[0] ??
-      "User";
-    const role = (authUser.user_metadata?.role as Role) ?? "CANDIDATE";
-
-    user = await getPrisma().user.create({
-      data: {
-        id: authUser.id,
-        email,
-        fullName,
-        role,
-      },
-    });
-  }
 
   return user;
 }
