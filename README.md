@@ -132,6 +132,7 @@ The recruiter account has 3 sample job listings pre-loaded. The candidate accoun
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (for seeding admin users) |
 | `GROQ_API_KEY` | Groq API key for AI features |
+| `SEED_SECRET` | Secret password to protect the `/api/seed` endpoint |
 
 ## CI/CD Pipeline
 
@@ -158,7 +159,19 @@ The following environment variables must be set in your Vercel project for the p
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (for seeding admin users) |
+| `SEED_SECRET` | A secret password to protect the `/api/seed` endpoint |
 | `GROQ_API_KEY` | Groq API key for AI features |
+
+### Seeding Production Data
+
+After deploying to Vercel and setting all environment variables, seed the database by sending a POST request to the seed endpoint:
+
+```bash
+curl -X POST https://your-app.vercel.app/api/seed \
+  -H "Authorization: Bearer your-seed-secret"
+```
+
+This creates the same test accounts and sample data described above.
 
 ### Required GitHub Secrets
 
