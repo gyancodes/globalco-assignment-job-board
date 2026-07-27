@@ -1,5 +1,7 @@
 import { NextRequest } from "next/server";
 
+export const runtime = "nodejs";
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -20,11 +22,16 @@ export async function POST(request: NextRequest) {
 
     // Require inside handler so any import errors are caught by try/catch
     // and always return JSON (not an HTML crash page).
-    // pdf-parse v2 uses a class-based API with { data, verbosity } options.
+    // pdf-parse v2 needs the worker + CanvasFactory for Node/serverless (Vercel).
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require("pdf-parse/worker");
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { CanvasFactory } = require("pdf-parse/worker");
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { PDFParse } = require("pdf-parse");
-    const parser = new PDFParse({ data: buffer, verbosity: 0 });
+    const parser = new PDFParse({ data: buffer, verbosity: 0, CanvasFactory });
     const result = await parser.getText();
+    await parser.destroy();
     const text = (
       result?.text ??
       result?.pages?.map((p: { text: string }) => p.text).join("\n") ??
