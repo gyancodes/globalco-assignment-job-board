@@ -1,36 +1,43 @@
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
+import { StatusUpdater } from "@/components/status-updater";
+import { Pagination } from "@/components/pagination";
 
-const statusColors: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
-  reviewing: "bg-blue-100 text-blue-700 border-blue-200",
-  accepted: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  rejected: "bg-red-100 text-red-700 border-red-200",
-};
+const PAGE_SIZE = 10;
 
-export default async function ApplicantsPage() {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function ApplicantsPage(props: { searchParams: SearchParams }) {
   const user = await currentUser();
+  const { page: pageParam } = await props.searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
 
   if (!user || user.role !== "RECRUITER") {
     redirect("/dashboard");
   }
 
-  const applications = await prisma.application.findMany({
-    where: {
-      job: { recruiterId: user.id },
-    },
-    include: {
-      candidate: {
-        select: { id: true, fullName: true, email: true },
+  const where = { job: { recruiterId: user.id } };
+
+  const [applications, total] = await Promise.all([
+    prisma.application.findMany({
+      where,
+      include: {
+        candidate: {
+          select: { id: true, fullName: true, email: true },
+        },
+        job: {
+          select: { id: true, title: true, company: true },
+        },
       },
-      job: {
-        select: { id: true, title: true, company: true },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.application.count({ where }),
+  ]);
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
     <div>
@@ -55,9 +62,10 @@ export default async function ApplicantsPage() {
                   {app.candidate.email}
                 </p>
               </div>
-              <Badge className={statusColors[app.status.toLowerCase()] ?? ""}>
-                {app.status.toLowerCase()}
-              </Badge>
+              <StatusUpdater
+                applicationId={app.id}
+                currentStatus={app.status as "PENDING" | "REVIEWING" | "ACCEPTED" | "REJECTED"}
+              />
             </div>
             <p className="text-xs text-muted-foreground mt-3">
               Applied to <strong>{app.job.title}</strong> at{" "}
@@ -67,6 +75,8 @@ export default async function ApplicantsPage() {
           </div>
         ))}
       </div>
+
+      <Pagination currentPage={page} totalPages={totalPages} basePath="/dashboard/applicants" />
     </div>
   );
 }

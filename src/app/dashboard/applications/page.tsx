@@ -2,6 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import { Pagination } from "@/components/pagination";
+
+const PAGE_SIZE = 10;
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700 border-yellow-200",
@@ -10,27 +13,35 @@ const statusColors: Record<string, string> = {
   rejected: "bg-red-100 text-red-700 border-red-200",
 };
 
-export default async function ApplicationsPage() {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function ApplicationsPage(props: { searchParams: SearchParams }) {
   const user = await currentUser();
+  const { page: pageParam } = await props.searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
 
   if (!user || user.role !== "CANDIDATE") {
     redirect("/dashboard");
   }
 
-  const applications = await prisma.application.findMany({
-    where: { candidateId: user.id },
-    include: {
-      job: {
-        select: {
-          id: true,
-          title: true,
-          company: true,
-          location: true,
+  const where = { candidateId: user.id };
+
+  const [applications, total] = await Promise.all([
+    prisma.application.findMany({
+      where,
+      include: {
+        job: {
+          select: { id: true, title: true, company: true, location: true },
         },
       },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.application.count({ where }),
+  ]);
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
     <div>
@@ -63,6 +74,8 @@ export default async function ApplicationsPage() {
           </div>
         ))}
       </div>
+
+      <Pagination currentPage={page} totalPages={totalPages} basePath="/dashboard/applications" />
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Loader2, CheckCircle } from "lucide-react";
+import { Loader2, CheckCircle, Upload } from "lucide-react";
 
 type ApplyButtonProps = {
   jobId: string;
@@ -15,16 +15,31 @@ export function ApplyButton({ jobId, hasApplied }: ApplyButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [applied, setApplied] = useState(hasApplied);
   const [error, setError] = useState<string | null>(null);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
 
   async function handleApply() {
     setIsLoading(true);
     setError(null);
 
     try {
+      let resumeUrl: string | undefined;
+
+      if (resumeFile) {
+        const formData = new FormData();
+        formData.append("file", resumeFile);
+        const uploadRes = await fetch("/api/ai/extract-text", {
+          method: "POST",
+          body: formData,
+        });
+        if (uploadRes.ok) {
+          resumeUrl = resumeFile.name;
+        }
+      }
+
       const res = await fetch("/api/applications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobId }),
+        body: JSON.stringify({ jobId, resumeUrl }),
       });
 
       if (!res.ok) {
@@ -51,7 +66,17 @@ export function ApplyButton({ jobId, hasApplied }: ApplyButtonProps) {
   }
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-2">
+      <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
+        <Upload className="h-4 w-4" />
+        <span>{resumeFile ? resumeFile.name : "Attach resume (optional)"}</span>
+        <input
+          type="file"
+          accept=".txt,.pdf"
+          className="hidden"
+          onChange={(e) => setResumeFile(e.target.files?.[0] ?? null)}
+        />
+      </label>
       <Button onClick={handleApply} disabled={isLoading}>
         {isLoading ? (
           <>

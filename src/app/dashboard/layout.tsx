@@ -2,6 +2,7 @@ import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { DashboardNav } from "@/components/dashboard-nav";
 import { UserMenu } from "@/components/user-menu";
+import { RoleSwitcher } from "@/components/role-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Briefcase } from "lucide-react";
 
@@ -32,6 +33,7 @@ export default async function DashboardLayout({
           </div>
           <div className="ml-auto flex items-center gap-3">
             <span className="text-sm text-muted-foreground hidden sm:inline">{user.fullName}</span>
+            <RoleSwitcher currentRole={user.role} />
             <ThemeToggle />
             <UserMenu fullName={user.fullName} email={user.email} />
           </div>

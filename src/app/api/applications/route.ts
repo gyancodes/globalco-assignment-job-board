@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
   try {
     const user = await requireRole("CANDIDATE");
 
-    const { jobId } = await request.json();
+    const { jobId, resumeUrl } = await request.json();
 
     if (!jobId) {
       throw new ApiError({
@@ -95,6 +95,7 @@ export async function POST(request: NextRequest) {
       data: {
         candidateId: user.id,
         jobId,
+        ...(resumeUrl && { resumeUrl }),
       },
     });
 
