@@ -85,6 +85,10 @@ export type ResumeReviewResult = {
   grammarSuggestions: string[];
   formattingSuggestions: string[];
   recommendations: string[];
+  keywordDensity?: string[];
+  impactScore?: number;
+  roleSuggestions?: string[];
+  quickWins?: string[];
 };
 
 export type GeneratedJobDescription = {
