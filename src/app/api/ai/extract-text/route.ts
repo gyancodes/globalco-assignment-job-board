@@ -23,12 +23,12 @@ export async function POST(request: NextRequest) {
     // Require inside handler so any import errors are caught by try/catch
     // and always return JSON (not an HTML crash page).
     // pdf-parse v2 needs the worker + CanvasFactory for Node/serverless (Vercel).
+    // setWorker(getData()) inlines the worker so Vercel doesn't need pdf.worker.mjs on disk.
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require("pdf-parse/worker");
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { CanvasFactory } = require("pdf-parse/worker");
+    const { CanvasFactory, getData } = require("pdf-parse/worker");
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { PDFParse } = require("pdf-parse");
+    PDFParse.setWorker(getData());
     const parser = new PDFParse({ data: buffer, verbosity: 0, CanvasFactory });
     const result = await parser.getText();
     await parser.destroy();
