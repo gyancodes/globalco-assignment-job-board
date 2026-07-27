@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { getPrisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { JobCard } from "@/features/jobs/components/job-card";
 import Link from "next/link";
 import { Briefcase, Users, ArrowRight, Clock, TrendingUp, FileText, Sparkles } from "lucide-react";
 
@@ -183,6 +182,8 @@ export default async function DashboardPage() {
     );
   }
 
+  // ── CANDIDATE DASHBOARD ──────────────────────────────────────────────────────
+
   const applicationCount = await getPrisma().application.count({
     where: { candidateId: user.id },
   });
@@ -192,12 +193,6 @@ export default async function DashboardPage() {
     include: { job: { select: { id: true, title: true, company: true } } },
     orderBy: { createdAt: "desc" },
     take: 5,
-  });
-
-  const latestJobs = await getPrisma().job.findMany({
-    include: { _count: { select: { applications: true } } },
-    orderBy: { createdAt: "desc" },
-    take: 6,
   });
 
   const statusStyles: Record<string, string> = {
@@ -265,35 +260,6 @@ export default async function DashboardPage() {
           )}
         </CardContent>
       </Card>
-
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold tracking-tight">Latest Jobs</h2>
-          <Link href="/jobs" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
-            View all <ArrowRight className="h-3 w-3" />
-          </Link>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {latestJobs.map((job) => (
-            <JobCard
-              key={job.id}
-              id={job.id}
-              title={job.title}
-              company={job.company}
-              location={job.location}
-              locationType={job.locationType}
-              salaryMin={job.salaryMin}
-              salaryMax={job.salaryMax}
-              currency={job.currency}
-              techSkills={job.techSkills}
-              experienceLevel={job.experienceLevel}
-              employmentType={job.employmentType}
-              createdAt={job.createdAt}
-              applicationCount={job._count.applications}
-            />
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

@@ -25,6 +25,30 @@ import {
 
 type ReviewTab = "overview" | "skills" | "improve" | "suggestions";
 
+function ScoreMeter({ value, label, icon: Icon, color }: { value: number; label: string; icon: typeof Target; color: string }) {
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+          <Icon className={`h-4 w-4 ${color}`} />
+          {label}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-3 rounded-full bg-muted overflow-hidden">
+            <div
+              className={`h-full rounded-full ${getScoreBg(value)} transition-all duration-1000`}
+              style={{ width: `${value}%` }}
+            />
+          </div>
+          <span className={`text-2xl font-bold tabular-nums ${getScoreColor(value)}`}>{value}/100</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function getScoreColor(score: number): string {
   if (score >= 80) return "text-emerald-500";
   if (score >= 60) return "text-amber-500";
@@ -150,28 +174,6 @@ export function ResumeReviewPage() {
     { id: "improve", label: "Improve", icon: TrendingUp },
     { id: "suggestions", label: "Suggestions", icon: Zap },
   ];
-
-  const ScoreMeter = ({ value, label, icon: Icon, color }: { value: number; label: string; icon: typeof Target; color: string }) => (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-          <Icon className={`h-4 w-4 ${color}`} />
-          {label}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-3 rounded-full bg-muted overflow-hidden">
-            <div
-              className={`h-full rounded-full ${getScoreBg(value)} transition-all duration-1000`}
-              style={{ width: `${value}%` }}
-            />
-          </div>
-          <span className={`text-2xl font-bold tabular-nums ${getScoreColor(value)}`}>{value}/100</span>
-        </div>
-      </CardContent>
-    </Card>
-  );
 
   return (
     <div className="space-y-8">

@@ -16,7 +16,7 @@ const candidateLinks = [
   { href: "/dashboard/profile", label: "My Profile", icon: User },
   { href: "/dashboard/applications", label: "My Applications", icon: FileText },
   { href: "/dashboard/resume", label: "Resume Review", icon: Sparkles },
-  { href: "/jobs", label: "Browse Jobs", icon: Search },
+  { href: "/dashboard/browse", label: "Browse Jobs", icon: Search },
 ];
 
 const recruiterLinks = [
@@ -51,7 +51,7 @@ export function DashboardNav({ role }: { role: Role }) {
       )}
 
       <nav className={cn(
-        "fixed lg:static inset-y-0 left-0 z-40 w-60 border-r bg-background lg:bg-muted/30 p-3 space-y-1 shrink-0 flex flex-col transition-transform duration-300 lg:transform-none",
+        "fixed lg:static inset-y-0 left-0 z-40 w-60 border-r bg-background lg:bg-muted/30 p-3 space-y-1 shrink-0 flex flex-col transition-transform duration-300 lg:transform-none lg:h-full lg:overflow-y-auto",
         open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         <div className="px-3 pb-2 pt-1 flex items-center justify-between lg:justify-start">
@@ -68,7 +68,7 @@ export function DashboardNav({ role }: { role: Role }) {
             const isActive = pathname === link.href || (link.href !== "/dashboard" && pathname.startsWith(link.href));
             return (
               <Link
-                key={link.href}
+                key={link.label}
                 href={link.href}
                 onClick={() => setOpen(false)}
                 className={cn(

@@ -10,8 +10,11 @@ export default async function GenerateJobDescriptionPage() {
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold tracking-tight mb-6">AI Job Description Generator</h1>
+    <div className="max-w-3xl">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold tracking-tight">AI Job Description Generator</h1>
+        <p className="text-sm text-muted-foreground mt-1">Let AI craft a complete, professional job posting from just a few inputs.</p>
+      </div>
       <JobDescriptionGenerator />
     </div>
   );

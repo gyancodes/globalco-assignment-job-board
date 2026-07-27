@@ -4,35 +4,34 @@ import { handleApiError } from "@/lib/api-error";
 import { getGroq } from "@/lib/groq";
 import { generateJobDescriptionSchema } from "@/lib/validations";
 
-const GENERATE_SYSTEM_PROMPT = `You are an expert senior technical recruiter and job description writer at a top-tier tech company. Generate a comprehensive, professional job posting based on the provided details.
+const GENERATE_SYSTEM_PROMPT = `You are an elite executive technical recruiter and professional copywriter at a top-tier Fortune 500 tech company. Your task is to generate a world-class, comprehensive, and highly engaging job posting based on the provided details.
 
 Return a valid JSON object with this exact structure:
 {
-  "title": "The exact job title",
-  "company": "A realistic company name in the relevant industry",
+  "title": "The exact job title (professional and clear)",
+  "company": "A realistic, modern company name in the relevant industry",
   "location": "City, State or City, Country",
   "locationType": "REMOTE" | "HYBRID" | "ON_SITE",
-  "salaryMin": number or null (annual salary in USD),
-  "salaryMax": number or null (annual salary in USD),
+  "salaryMin": number or null (realistic annual salary in USD, e.g. 120000),
+  "salaryMax": number or null (realistic annual salary in USD, e.g. 180000),
   "currency": "USD",
-  "techSkills": ["array of required technical skills"],
+  "techSkills": ["array of 5-8 specific, modern technical skills and tools"],
   "visaSponsorship": boolean,
   "experienceLevel": "ENTRY" | "MID" | "SENIOR" | "LEAD" | "EXECUTIVE",
   "employmentType": "FULL_TIME" | "PART_TIME" | "CONTRACT" | "INTERNSHIP" | "FREELANCE",
   "companySize": "1-10" | "11-50" | "51-200" | "201-500" | "500+",
-  "aboutCompany": "A compelling 2-3 sentence company description highlighting mission and culture",
-  "description": "A detailed 3-5 paragraph job description covering role overview, responsibilities, who you are, and why join",
-  "benefits": ["array of 4-6 specific benefits like health insurance, equity, remote stipend, 401k, PTO"],
-  "interviewProcess": "Clear step-by-step interview process description"
+  "aboutCompany": "A highly compelling, authentic 3-4 sentence company description highlighting mission, culture, and impact.",
+  "description": "A detailed, beautifully written 4-5 paragraph job description. Must include an engaging hook, a summary of the role's impact, detailed responsibilities, and what success looks like in the first 90 days. Use a modern, inspiring, yet professional tone.",
+  "benefits": ["array of 5-7 highly specific, premium modern benefits (e.g., '100% covered health/dental/vision', 'Generous equity package', 'Flexible PTO with mandatory minimums', 'Home office stipend')"],
+  "interviewProcess": "A clear, respectful, and transparent 3-5 step interview process that respects the candidate's time."
 }
 
 Guidelines:
-- Write compelling, specific, and authentic content — avoid generic buzzwords
-- Description should be comprehensive: role overview, key responsibilities, qualifications, and what makes this opportunity unique
-- Salary ranges should be realistic for the role and experience level
-- Tech skills should be specific technologies, frameworks, and tools (not generic like "strong communication")
-- Benefits should be concrete and modern (equity, learning budget, flexible hours, etc.)
-- Interview process should be 3-5 clear steps`;
+- Tone: Inspiring, professional, authentic, and modern. Avoid corporate jargon, cliches, or "ninja/rockstar" terminology.
+- Description: Make it incredibly compelling. Candidates should read this and think "I need to work here." Clearly explain the *why* behind the role, not just the *what*.
+- Realism: Salary ranges, company size, and location should make sense for the role's seniority and tech stack.
+- Specificity: Tech skills must be specific (e.g., "React 18", "PostgreSQL", "AWS ECS" instead of just "Frontend" or "Database").
+- Formatting: Ensure text fields are well-formatted and easy to read.`;
 
 export async function POST(request: NextRequest) {
   try {

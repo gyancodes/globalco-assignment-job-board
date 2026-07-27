@@ -18,7 +18,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen overflow-hidden flex flex-col">
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex h-14 items-center px-6 max-w-7xl mx-auto w-full">
           <div className="flex items-center gap-2.5">
@@ -39,9 +39,11 @@ export default async function DashboardLayout({
           </div>
         </div>
       </header>
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden">
         <DashboardNav role={user.role} />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full max-w-7xl mx-auto">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+          <div className="w-full max-w-7xl mx-auto">{children}</div>
+        </main>
       </div>
     </div>
   );
