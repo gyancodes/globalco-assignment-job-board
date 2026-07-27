@@ -52,6 +52,29 @@ export function ProfileForm({ profile }: ProfileFormProps) {
     setSkills((prev) => prev.filter((x) => x !== s));
   }
 
+  async function extractTextFromPdf(file: File): Promise<string> {
+    if (file.type === "text/plain") {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsText(file);
+      });
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch("/api/ai/extract-text", {
+      method: "POST",
+      body: formData,
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || "Failed to extract text from PDF");
+    }
+    const { text } = await res.json();
+    return text;
+  }
+
   const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -61,20 +84,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
     setParsed(false);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const extractRes = await fetch("/api/ai/extract-text", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!extractRes.ok) {
-        const err = await extractRes.json();
-        throw new Error(err.error || "Failed to extract text");
-      }
-
-      const { text } = await extractRes.json();
+      const text = await extractTextFromPdf(file);
 
       setParsing(true);
 

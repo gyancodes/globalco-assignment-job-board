@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createJobSchema, type CreateJobInput } from "@/lib/validations";
 import { useRouter } from "next/navigation";
@@ -51,7 +51,7 @@ export function JobForm({ defaultValues, jobId }: JobFormProps) {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<CreateJobInput>({
-    resolver: zodResolver(createJobSchema),
+    resolver: zodResolver(createJobSchema) as unknown as Resolver<CreateJobInput>,
     defaultValues: { ...defaultValues, techSkills: skills },
   });
 
