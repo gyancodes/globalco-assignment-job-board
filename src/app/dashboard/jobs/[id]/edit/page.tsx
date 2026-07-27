@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { JobForm } from "@/features/jobs/components/job-form";
@@ -11,7 +11,7 @@ export default async function EditJobPage(props: { params: Params }) {
   if (!user || user.role !== "RECRUITER") redirect("/dashboard");
 
   const { id } = await props.params;
-  const job = await prisma.job.findUnique({ where: { id } });
+  const job = await getPrisma().job.findUnique({ where: { id } });
   if (!job || job.recruiterId !== user.id) notFound();
 
   return (

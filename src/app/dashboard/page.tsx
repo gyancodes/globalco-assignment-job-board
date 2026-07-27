@@ -1,6 +1,6 @@
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -11,12 +11,12 @@ export default async function DashboardPage() {
   if (!user) redirect("/sign-in");
 
   if (user.role === "RECRUITER") {
-    const jobCount = await prisma.job.count({ where: { recruiterId: user.id } });
-    const applicationCount = await prisma.application.count({
+    const jobCount = await getPrisma().job.count({ where: { recruiterId: user.id } });
+    const applicationCount = await getPrisma().application.count({
       where: { job: { recruiterId: user.id } },
     });
 
-    const recentJobs = await prisma.job.findMany({
+    const recentJobs = await getPrisma().job.findMany({
       where: { recruiterId: user.id },
       include: { _count: { select: { applications: true } } },
       orderBy: { createdAt: "desc" },
@@ -182,11 +182,11 @@ export default async function DashboardPage() {
     );
   }
 
-  const applicationCount = await prisma.application.count({
+  const applicationCount = await getPrisma().application.count({
     where: { candidateId: user.id },
   });
 
-  const recentApps = await prisma.application.findMany({
+  const recentApps = await getPrisma().application.findMany({
     where: { candidateId: user.id },
     include: { job: { select: { id: true, title: true, company: true } } },
     orderBy: { createdAt: "desc" },

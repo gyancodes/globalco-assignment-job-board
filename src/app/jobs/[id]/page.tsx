@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { currentUser } from "@/lib/auth";
@@ -45,7 +45,7 @@ function fmtSalary(min: number | null, max: number | null, currency: string): st
 export default async function JobDetailPage(props: { params: Params }) {
   const { id } = await props.params;
 
-  const job = await prisma.job.findUnique({
+  const job = await getPrisma().job.findUnique({
     where: { id },
     include: {
       recruiter: { select: { id: true, fullName: true, email: true } },
@@ -58,7 +58,7 @@ export default async function JobDetailPage(props: { params: Params }) {
   const user = await currentUser();
   let hasApplied = false;
   if (user?.role === "CANDIDATE") {
-    const app = await prisma.application.findUnique({
+    const app = await getPrisma().application.findUnique({
       where: { candidateId_jobId: { candidateId: user.id, jobId: job.id } },
     });
     hasApplied = !!app;

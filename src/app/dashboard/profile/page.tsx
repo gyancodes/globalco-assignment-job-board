@@ -1,6 +1,6 @@
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { ProfileForm } from "@/features/profile/components/profile-form";
 import { MapPin, Link as LinkIcon, Globe, ExternalLink, Phone, Mail } from "lucide-react";
 import Link from "next/link";
@@ -27,7 +27,7 @@ export default async function ProfilePage() {
   const authUser = await currentUser();
   if (!authUser) redirect("/sign-in");
 
-  const profile = await prisma.user.findUnique({ where: { id: authUser.id } });
+  const profile = await getPrisma().user.findUnique({ where: { id: authUser.id } });
   if (!profile) redirect("/dashboard");
 
   const isCandidate = profile.role === "CANDIDATE";

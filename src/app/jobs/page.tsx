@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { JobCard } from "@/features/jobs/components/job-card";
 import { JobSearch } from "@/features/jobs/components/job-search";
 import { Pagination } from "@/components/pagination";
@@ -28,7 +28,7 @@ async function JobList({ searchParams }: { searchParams: SearchParams }) {
   };
 
   const [jobs, total] = await Promise.all([
-    prisma.job.findMany({
+    getPrisma().job.findMany({
       where,
       include: {
         _count: { select: { applications: true } },
@@ -37,7 +37,7 @@ async function JobList({ searchParams }: { searchParams: SearchParams }) {
       skip: (page - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
     }),
-    prisma.job.count({ where }),
+    getPrisma().job.count({ where }),
   ]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);

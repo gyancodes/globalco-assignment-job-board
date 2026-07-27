@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { requireRole } from "@/lib/auth";
 import { createJobSchema } from "@/lib/validations";
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   const location = searchParams.get("location");
 
   try {
-    const jobs = await prisma.job.findMany({
+    const jobs = await getPrisma().job.findMany({
       where: {
         ...(query && {
           OR: [
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const data = createJobSchema.parse(body);
 
-    const job = await prisma.job.create({
+    const job = await getPrisma().job.create({
       data: {
         title: data.title,
         description: data.description,

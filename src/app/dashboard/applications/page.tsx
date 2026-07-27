@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +27,7 @@ export default async function ApplicationsPage(props: { searchParams: SearchPara
   const where = { candidateId: user.id };
 
   const [applications, total] = await Promise.all([
-    prisma.application.findMany({
+    getPrisma().application.findMany({
       where,
       include: {
         job: {
@@ -38,7 +38,7 @@ export default async function ApplicationsPage(props: { searchParams: SearchPara
       skip: (page - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
     }),
-    prisma.application.count({ where }),
+    getPrisma().application.count({ where }),
   ]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);

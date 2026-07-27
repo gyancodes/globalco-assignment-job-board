@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import type { Role } from "@/types";
 import { ApiError } from "@/lib/api-error";
 
@@ -9,7 +9,7 @@ export async function currentUser() {
 
   if (!authUser) return null;
 
-  let user = await prisma.user.findUnique({
+  let user = await getPrisma().user.findUnique({
     where: { id: authUser.id },
   });
 
@@ -23,7 +23,7 @@ export async function currentUser() {
 
     const role = (authUser.user_metadata?.role as Role) ?? "CANDIDATE";
 
-    user = await prisma.user.create({
+    user = await getPrisma().user.create({
       data: {
         id: authUser.id,
         email,
@@ -48,7 +48,7 @@ export async function requireAuth() {
     });
   }
 
-  let user = await prisma.user.findUnique({
+  let user = await getPrisma().user.findUnique({
     where: { id: authUser.id },
   });
 
@@ -61,7 +61,7 @@ export async function requireAuth() {
       "User";
     const role = (authUser.user_metadata?.role as Role) ?? "CANDIDATE";
 
-    user = await prisma.user.create({
+    user = await getPrisma().user.create({
       data: {
         id: authUser.id,
         email,

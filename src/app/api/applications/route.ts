@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { requireAuth, requireRole } from "@/lib/auth";
 import { handleApiError, ApiError } from "@/lib/api-error";
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const jobId = searchParams.get("jobId");
 
     if (user.role === "RECRUITER") {
-      const applications = await prisma.application.findMany({
+      const applications = await getPrisma().application.findMany({
         where: {
           ...(jobId ? { jobId } : {}),
           job: { recruiterId: user.id },
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       return Response.json(applications);
     }
 
-    const applications = await prisma.application.findMany({
+    const applications = await getPrisma().application.findMany({
       where: { candidateId: user.id },
       include: {
         job: {
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const job = await prisma.job.findUnique({ where: { id: jobId } });
+    const job = await getPrisma().job.findUnique({ where: { id: jobId } });
 
     if (!job) {
       throw new ApiError({
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const existing = await prisma.application.findUnique({
+    const existing = await getPrisma().application.findUnique({
       where: {
         candidateId_jobId: {
           candidateId: user.id,
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const application = await prisma.application.create({
+    const application = await getPrisma().application.create({
       data: {
         candidateId: user.id,
         jobId,

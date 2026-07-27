@@ -5,16 +5,22 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-function createPrismaClient() {
-  const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL!,
-  });
+let prismaInstance: PrismaClient | null = null;
 
-  return new PrismaClient({ adapter });
-}
+export function getPrisma() {
+  if (prismaInstance) return prismaInstance;
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error("DATABASE_URL environment variable is not set");
+  }
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+  const adapter = new PrismaPg({ connectionString });
+  prismaInstance = globalForPrisma.prisma ?? new PrismaClient({ adapter });
+
+  if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prisma = prismaInstance;
+  }
+
+  return prismaInstance;
 }

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { requireRole } from "@/lib/auth";
 import { handleApiError } from "@/lib/api-error";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { getGroq } from "@/lib/groq";
 
 const MATCH_SYSTEM_PROMPT = `You are an expert technical recruiter evaluating how well a candidate fits a job. Analyze the candidate's profile against the job description and return a JSON object:
@@ -28,12 +28,12 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: "jobId is required" }, { status: 400 });
     }
 
-    const job = await prisma.job.findUnique({ where: { id: jobId } });
+    const job = await getPrisma().job.findUnique({ where: { id: jobId } });
     if (!job) {
       return Response.json({ error: "Job not found" }, { status: 404 });
     }
 
-    const profile = await prisma.user.findUnique({ where: { id: user.id } });
+    const profile = await getPrisma().user.findUnique({ where: { id: user.id } });
     if (!profile) {
       return Response.json({ error: "Profile not found" }, { status: 404 });
     }

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { currentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -29,9 +29,9 @@ async function deleteJob(formData: FormData) {
   const user = await currentUser();
   if (!user || user.role !== "RECRUITER") throw new Error("Unauthorized");
   const jobId = formData.get("jobId") as string;
-  const job = await prisma.job.findUnique({ where: { id: jobId } });
+  const job = await getPrisma().job.findUnique({ where: { id: jobId } });
   if (!job || job.recruiterId !== user.id) throw new Error("Forbidden");
-  await prisma.job.delete({ where: { id: jobId } });
+  await getPrisma().job.delete({ where: { id: jobId } });
   revalidatePath("/dashboard/jobs");
 }
 
@@ -39,7 +39,7 @@ export default async function RecruiterJobsPage() {
   const user = await currentUser();
   if (!user || user.role !== "RECRUITER") redirect("/dashboard");
 
-  const jobs = await prisma.job.findMany({
+  const jobs = await getPrisma().job.findMany({
     where: { recruiterId: user.id },
     include: { _count: { select: { applications: true } } },
     orderBy: { createdAt: "desc" },

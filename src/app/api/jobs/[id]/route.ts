@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 import { requireRole } from "@/lib/auth";
 import { createJobSchema } from "@/lib/validations";
@@ -11,7 +11,7 @@ export async function GET(
   const { id } = await params;
 
   try {
-    const job = await prisma.job.findUnique({
+    const job = await getPrisma().job.findUnique({
       where: { id },
       include: {
         recruiter: {
@@ -45,7 +45,7 @@ export async function PUT(
     const user = await requireRole("RECRUITER");
     const { id } = await params;
 
-    const job = await prisma.job.findUnique({ where: { id } });
+    const job = await getPrisma().job.findUnique({ where: { id } });
 
     if (!job) {
       return Response.json({ error: "Job not found" }, { status: 404 });
@@ -62,7 +62,7 @@ export async function PUT(
     const body = await request.json();
     const data = createJobSchema.parse(body);
 
-    const updated = await prisma.job.update({
+    const updated = await getPrisma().job.update({
       where: { id },
       data: {
         title: data.title,
@@ -98,7 +98,7 @@ export async function DELETE(
     const user = await requireRole("RECRUITER");
     const { id } = await params;
 
-    const job = await prisma.job.findUnique({ where: { id } });
+    const job = await getPrisma().job.findUnique({ where: { id } });
 
     if (!job) {
       return Response.json({ error: "Job not found" }, { status: 404 });
@@ -112,7 +112,7 @@ export async function DELETE(
       });
     }
 
-    await prisma.job.delete({ where: { id } });
+    await getPrisma().job.delete({ where: { id } });
 
     return Response.json({ success: true });
   } catch (error) {

@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 import { handleApiError, ApiError } from "@/lib/api-error";
 
@@ -26,7 +26,7 @@ export async function PUT(request: NextRequest) {
       });
     }
 
-    const updated = await prisma.user.update({
+    const updated = await getPrisma().user.update({
       where: { id: authUser.id },
       data: { role },
     });

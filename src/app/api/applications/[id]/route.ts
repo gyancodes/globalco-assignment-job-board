@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 import { handleApiError, ApiError } from "@/lib/api-error";
 
@@ -20,7 +20,7 @@ export async function PATCH(
       });
     }
 
-    const application = await prisma.application.findUnique({
+    const application = await getPrisma().application.findUnique({
       where: { id },
       include: { job: { select: { recruiterId: true } } },
     });
@@ -41,7 +41,7 @@ export async function PATCH(
       });
     }
 
-    const updated = await prisma.application.update({
+    const updated = await getPrisma().application.update({
       where: { id },
       data: { status },
     });
